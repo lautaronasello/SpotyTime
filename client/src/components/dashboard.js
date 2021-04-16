@@ -4,6 +4,7 @@ import { Container, Form } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import TrackSearchResult from "./trackSearchResult";
 import Player from "./player";
+import axios from "axios";
 
 const spotifyApi = new SpotifyWebApi({
   clientId: "5e840d136ada47be9bd8479cc2223f1e",
@@ -14,11 +15,28 @@ export default function Dashboard({ code }) {
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [playingTrack, setPlayingTrack] = useState();
+  const [lyrics, setLyrics] = useState("");
+  console.log(searchResults);
 
   function chooseTrack(track) {
     setPlayingTrack(track);
     setSearch("");
+    setLyrics("");
   }
+
+  useEffect(() => {
+    if (!playingTrack) return;
+    axios
+      .get("http://localhost:3001/lyrics", {
+        params: {
+          track: playingTrack.title,
+          artist: playingTrack.artist,
+        },
+      })
+      .then((res) => {
+        setLyrics(res.data.lyrics);
+      });
+  }, [playingTrack]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -55,27 +73,37 @@ export default function Dashboard({ code }) {
   }, [search, accessToken]);
 
   return (
-    <Container className="d-flex flex-column py-2" style={{ height: "100vh" }}>
-      <Form.Control
-        type="search"
-        placeholder="Search Songs/Artists"
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-        }}
-      />
-      <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
-        {searchResults.map((track) => (
-          <TrackSearchResult
-            track={track}
-            key={track.uri}
-            chooseTrack={chooseTrack}
-          />
-        ))}
-      </div>
-      <div>
-        <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
-      </div>
-    </Container>
+    <div style={{ background: "coral" }}>
+      <Container
+        className="d-flex flex-column py-2"
+        style={{ height: "100vh", background: "white" }}
+      >
+        <Form.Control
+          type="search"
+          placeholder="Search Songs/Artists"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        />
+        <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
+          {searchResults.map((track) => (
+            <TrackSearchResult
+              track={track}
+              key={track.uri}
+              chooseTrack={chooseTrack}
+            />
+          ))}
+          {searchResults.length === 0 && (
+            <div className="text-center" style={{ whiteSpace: "pre" }}>
+              {lyrics}
+            </div>
+          )}
+        </div>
+        <div>
+          <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
+        </div>
+      </Container>
+    </div>
   );
 }
