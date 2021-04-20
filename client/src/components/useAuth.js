@@ -31,8 +31,7 @@ export default function useAuth(code) {
           refreshToken,
         })
         .then((res) => {
-          console.log(res.data);
-          setRefreshToken(res.data.refreshToken);
+          setAccessToken(res.data.accessToken);
           setExpiresIn(res.data.expiresIn);
         })
         .catch(() => {
