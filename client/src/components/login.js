@@ -1,27 +1,42 @@
 import React from "react";
-import { Container, Modal } from "react-bootstrap";
+import { Container, Card, Col, Row } from "react-bootstrap";
 
 const AUTH_URL =
   "https://accounts.spotify.com/authorize?client_id=5e840d136ada47be9bd8479cc2223f1e&response_type=code&redirect_uri=http://localhost:3000&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
 
 export default function Login() {
   return (
-    <Container>
-      <Modal.Dialog>
-        <Modal.Header closeButton>
-          <Modal.Title>SpotyTime</Modal.Title>
-        </Modal.Header>
+    <Container
+      className="d-flex justify-content-center align-items-center"
+      style={{ minHeight: "50vh" }}
+    >
+      <Card border="success" style={{ width: "18rem" }}>
+        <Card.Header>
+          <Container>
+            <Row>
+              <Col>SpotyTime</Col>
+              <Col>
+                <a
+                  className="card-link"
+                  href="https://www.linkedin.com/in/lautaronasello/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Lau Nasello
+                </a>
+              </Col>
+            </Row>
+          </Container>
+        </Card.Header>
 
-        <Modal.Body>
-          <p>Inicia sesion para poder escuchar tu musica!</p>
-        </Modal.Body>
-
-        <Modal.Footer>
+        <Card.Body className=" text-center align-items-center">
+          <Card.Title>Inicia Sesión para continuar</Card.Title>
+          <Card.Text>Es necesario que tengas Spotify Premium!</Card.Text>
           <a className="btn btn-success btn-lg" href={AUTH_URL}>
             Login
           </a>
-        </Modal.Footer>
-      </Modal.Dialog>
+        </Card.Body>
+      </Card>
     </Container>
   );
 }
