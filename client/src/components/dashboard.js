@@ -1,34 +1,33 @@
-import { useState, useEffect } from "react";
-import useAuth from "./useAuth";
-import { Container, Form, Navbar } from "react-bootstrap";
-import SpotifyWebApi from "spotify-web-api-node";
-import TrackSearchResult from "./trackSearchResult";
-import Player from "./player";
-import axios from "axios";
-import Logout from "./logout";
+import { useState, useEffect } from 'react';
+import useAuth from './useAuth';
+import { Container, Form, Navbar } from 'react-bootstrap';
+import SpotifyWebApi from 'spotify-web-api-node';
+import TrackSearchResult from './trackSearchResult';
+import Player from './player';
+import axios from 'axios';
+import Logout from './logout';
 
 const spotifyApi = new SpotifyWebApi({
-  clientId: "5e840d136ada47be9bd8479cc2223f1e",
+  clientId: '5e840d136ada47be9bd8479cc2223f1e',
 });
 
 export default function Dashboard({ code }) {
   const accessToken = useAuth(code);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [playingTrack, setPlayingTrack] = useState();
-  const [lyrics, setLyrics] = useState("");
-  console.log(accessToken);
+  const [lyrics, setLyrics] = useState('');
 
   function chooseTrack(track) {
     setPlayingTrack(track);
-    setSearch("");
-    setLyrics("");
+    setSearch('');
+    setLyrics('');
   }
 
   useEffect(() => {
     if (!playingTrack) return;
     axios
-      .get("http://localhost:3001/lyrics", {
+      .get('https://spotytimeback.herokuapp.com/lyrics', {
         params: {
           track: playingTrack.title,
           artist: playingTrack.artist,
@@ -74,20 +73,20 @@ export default function Dashboard({ code }) {
   }, [search, accessToken]);
 
   return (
-    <div style={{ background: "linear-gradient(to bottom, #81b71a, white)" }}>
+    <div style={{ background: 'linear-gradient(to bottom, #81b71a, white)' }}>
       <Container
-        className="d-flex flex-column py-2"
-        style={{ height: "100vh", background: "white" }}
+        className='d-flex flex-column py-2'
+        style={{ height: '100vh', background: 'white' }}
       >
-        <Navbar className="d-flex text-center pe-3" expand="lg">
-          <Navbar.Brand className="me-5 pe-5 ps-4">
-            <h1 className="display-5 me-5">SpotyTime</h1>
+        <Navbar className='d-flex text-center pe-3' expand='lg'>
+          <Navbar.Brand className='me-5 pe-5 ps-4'>
+            <h1 className='display-5 me-5'>SpotyTime</h1>
           </Navbar.Brand>
           <Form.Control
-            style={{ width: "20rem" }}
-            type="search"
-            className="me-auto ms-5 "
-            placeholder="Search Songs/Artists"
+            style={{ width: '20rem' }}
+            type='search'
+            className='me-auto ms-5 '
+            placeholder='Search Songs/Artists'
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -96,7 +95,7 @@ export default function Dashboard({ code }) {
           <Logout />
         </Navbar>
 
-        <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
+        <div className='flex-grow-1 my-2' style={{ overflowY: 'auto' }}>
           {searchResults.map((track) => (
             <TrackSearchResult
               track={track}
@@ -105,7 +104,7 @@ export default function Dashboard({ code }) {
             />
           ))}
           {searchResults.length === 0 && (
-            <div className="text-center" style={{ whiteSpace: "pre" }}>
+            <div className='text-center' style={{ whiteSpace: 'pre' }}>
               {lyrics}
             </div>
           )}
